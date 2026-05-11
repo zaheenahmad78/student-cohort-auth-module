@@ -30,8 +30,10 @@ app.get('/', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-    console.log(`
+
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`
     ════════════════════════════════════════
     ✅ Zaheen - Auth Core is running!
     ════════════════════════════════════════
@@ -43,4 +45,7 @@ app.listen(PORT, () => {
     GET    /auth/validate - Validate Token
     GET    /protected    - Protected Route
     `);
-});
+    });
+}
+
+module.exports = app;
