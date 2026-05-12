@@ -24,4 +24,8 @@ function findUserByEmail(email) {
     return users.find(user => user.email === email);
 }
 
-module.exports = { findUserByEmail };
+function findUserById(userId) {
+    return users.find(user => user.user_id === userId);
+}
+
+module.exports = { findUserByEmail, findUserById, users };

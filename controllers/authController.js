@@ -3,7 +3,6 @@ const authService = require('../services/authService');
 
 class AuthController {
     
-    // POST /auth/login
     async login(req, res) {
         try {
             const { email, password } = req.body;
@@ -26,7 +25,6 @@ class AuthController {
         }
     }
     
-    // POST /auth/logout
     async logout(req, res) {
         try {
             const token = req.headers.authorization?.split(' ')[1];
@@ -49,7 +47,6 @@ class AuthController {
         }
     }
     
-    // GET /auth/validate
     async validate(req, res) {
         try {
             const token = req.headers.authorization?.split(' ')[1];
@@ -62,6 +59,11 @@ class AuthController {
             }
             
             const result = authService.validateToken(token);
+            
+            if (!result.valid) {
+                return res.status(401).json(result);
+            }
+            
             res.json(result);
             
         } catch (error) {
