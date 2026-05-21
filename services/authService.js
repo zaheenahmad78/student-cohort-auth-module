@@ -35,7 +35,55 @@ class AuthService {
                 email: user.email,
                 role: user.role
             }
-        };
+            
+            // Check if user is active
+            if (user.is_active === false) {
+                throw new Error('Account is inactive');
+            }
+            
+            // Check if user is soft-deleted
+            if (user.deleted_at) {
+                throw new Error('Invalid email or password');
+            }
+            
+            // Validate password using bcrypt
+            console.log('🔐 Validating password...');
+            const isPasswordValid = await validatePassword(user, password);
+            console.log('✅ Password validation result:', isPasswordValid);
+            
+            if (!isPasswordValid) {
+                throw new Error('Invalid email or password');
+            }
+            
+            // Generate JWT Token
+            const token = jwt.sign(
+                {
+                    user_id: user._id.toString(),
+                    email: user.email,
+                    role: user.role,
+                    is_active: user.is_active
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN }
+            );
+            
+            console.log('✅ Login successful, token generated');
+            
+            return {
+                success: true,
+                message: 'Login successful',
+                token: token,
+                user: {
+                    user_id: user._id.toString(),
+                    email: user.email,
+                    role: user.role,
+                    is_active: user.is_active
+                }
+            };
+        } catch (err) {
+            console.error('❌ Login error:', err.message);
+            throw err;
+        }
     }
     
     async logout(token) {

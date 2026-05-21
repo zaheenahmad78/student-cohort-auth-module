@@ -5,19 +5,26 @@ class AuthController {
     
     async login(req, res) {
         try {
+            console.log('🔐 [CONTROLLER] LOGIN REQUEST RECEIVED');
+            console.log('Body:', req.body);
+            
             const { email, password } = req.body;
             
             if (!email || !password) {
+                console.log('⚠️ Missing email or password');
                 return res.status(400).json({
                     success: false,
                     error: 'Email and password are required'
                 });
             }
             
+            console.log(`📧 [CONTROLLER] Attempting login for: ${email}`);
             const result = await authService.login(email, password);
+            console.log('✅ [CONTROLLER] Login successful');
             res.json(result);
             
         } catch (error) {
+            console.error('❌ [CONTROLLER] Login error:', error.message);
             res.status(401).json({
                 success: false,
                 error: error.message
